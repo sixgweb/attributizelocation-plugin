@@ -63,7 +63,8 @@ class Plugin extends PluginBase
     {
         $code = null;
         if (isset($field->config['dependsOn']) && $field->config['dependsOn']) {
-            $code = post($field->config['dependsOn'], $model->{$field->config['dependsOn']});
+            $key = str_replace('[', '_', str_replace(']', '', $field->config['dependsOn']));
+            $code = post($field->config['dependsOn'], $model->{$key});
         }
 
         $country = \RainLab\Location\Models\Country::where('code', $code)->first();
