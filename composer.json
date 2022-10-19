@@ -1,7 +1,7 @@
 {
     "name": "sixgweb/attributizelocation-plugin",
     "type": "october-plugin",
-    "description": "Attributize integration with RainLab Location",
+    "description": "RainLab Location Attributize Integration",
     "require": {
         "composer/installers": "~1.0"
     }
