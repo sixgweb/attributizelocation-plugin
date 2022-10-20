@@ -1,6 +1,7 @@
 {
     "name": "sixgweb/attributizelocation-plugin",
     "type": "october-plugin",
+    "license": "MIT",
     "description": "RainLab Location Attributize Integration",
     "require": {
         "composer/installers": "~1.0"
