@@ -2,6 +2,8 @@
 
 namespace Sixgweb\AttributizeLocation;
 
+use App;
+use October\Rain\Html\Helper as HtmlHelper;
 use Sixgweb\Attributize\Models\Field;
 use System\Classes\PluginBase;
 
@@ -63,8 +65,21 @@ class Plugin extends PluginBase
     {
         $code = null;
         if (isset($field->config['dependsOn']) && $field->config['dependsOn']) {
-            $key = str_replace('[', '_', str_replace(']', '', $field->config['dependsOn']));
-            $code = post($field->config['dependsOn'], $model->{$key});
+
+            //arrayName will be set when in backend context
+            if ($field->arrayName) {
+                $post = $field->arrayName . '[' . implode('][', HtmlHelper::nameToArray($field->config['dependsOn'])) . ']';
+                $key = 'field_values_' . $field->config['dependsOn'];
+            } else {
+                $post = $field->config['dependsOn'];
+                $key = str_replace(
+                    ['[', ']'],
+                    ['_', ''],
+                    $field->config['dependsOn']
+                );
+            }
+
+            $code = post($post, $model->{$key});
         }
 
         $country = \RainLab\Location\Models\Country::where('code', $code)->first();

@@ -1,2 +1,2 @@
-1.0.1: 
-  - First version of Attributize Location
+1.0.1: First version of Attributize Location
+1.0.2: Fix backend not setting states based on saved country
