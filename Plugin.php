@@ -6,6 +6,10 @@ use App;
 use October\Rain\Html\Helper as HtmlHelper;
 use Sixgweb\Attributize\Models\Field;
 use System\Classes\PluginBase;
+use RainLab\Location\Models\State;
+use RainLab\Location\Models\Country;
+use RainLab\Location\Models\Setting;
+
 
 /**
  * Plugin Information File
@@ -55,7 +59,7 @@ class Plugin extends PluginBase
 
     public static function getCountryOptions()
     {
-        return \RainLab\Location\Models\Country::isEnabled()
+        return Country::isEnabled()
             ->orderBy('is_pinned', 'desc')
             ->orderBy('name', 'asc')
             ->lists('name', 'code');
@@ -66,26 +70,23 @@ class Plugin extends PluginBase
         $code = null;
         if (isset($field->config['dependsOn']) && $field->config['dependsOn']) {
 
+            $parts = HtmlHelper::nameToArray($field->config['dependsOn']);
+            $key = end($parts);
+
             //arrayName will be set when in backend context
             if ($field->arrayName) {
-                $post = $field->arrayName . '[' . implode('][', HtmlHelper::nameToArray($field->config['dependsOn'])) . ']';
-                $key = 'field_values_' . $field->config['dependsOn'];
+                $post = $field->arrayName . '[' . implode('][', $parts) . ']';
             } else {
                 $post = $field->config['dependsOn'];
-                $key = str_replace(
-                    ['[', ']'],
-                    ['_', ''],
-                    $field->config['dependsOn']
-                );
             }
 
-            $code = post($post, $model->{$key});
+            $code = post($post, $model->field_values[$key] ?? null);
         }
 
-        $country = \RainLab\Location\Models\Country::where('code', $code)->first();
-        $countryId = $country ? $country->id : \RainLab\Location\Models\Setting::get('default_country');
+        $country = Country::where('code', $code)->first();
+        $countryId = $country ? $country->id : Setting::get('default_country');
 
-        return \RainLab\Location\Models\State::whereCountryId($countryId)
+        return State::whereCountryId($countryId)
             ->isEnabled()
             ->orderBy('name', 'asc')
             ->lists('name', 'code');

@@ -1,3 +1,4 @@
 1.0.1: First version of Attributize Location
 1.0.2: Fix backend not setting states based on saved country
 1.0.3: Push to match tags
+1.0.4: Fix get country/state dropdown values from field_values array, instead of generated column
