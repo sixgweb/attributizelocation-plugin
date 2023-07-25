@@ -70,14 +70,25 @@ class Plugin extends PluginBase
         $code = null;
         if (isset($field->config['dependsOn']) && $field->config['dependsOn']) {
 
-            $parts = HtmlHelper::nameToArray($field->config['dependsOn']);
+            $dependsOn = null;
+            if (is_array($field->config['dependsOn'])) {
+                foreach ($field->config['dependsOn'] as $code) {
+                    if (strpos($code, 'field_values') !== false) {
+                        $dependsOn = $code;
+                    }
+                }
+            } else {
+                $dependsOn = $field->config['dependsOn'];
+            }
+
+            $parts = HtmlHelper::nameToArray($dependsOn);
             $key = end($parts);
 
             //arrayName will be set when in backend context
             if ($field->arrayName) {
                 $post = $field->arrayName . '[' . implode('][', $parts) . ']';
             } else {
-                $post = $field->config['dependsOn'];
+                $post = $dependsOn;
             }
 
             $code = post($post, $model->field_values[$key] ?? null);
